@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+import static com.nextroom.app.constants.Constants.USER_ALREADY_EXISTS;
+
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
@@ -35,8 +37,15 @@ public class UserServiceImpl implements UserService {
         // Map the DTO to User entity and save
         User user = modelMapper.map(userRequestDTO, User.class);
         user.setStatus(true);
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);
+
+        // Ensure password is not null
+        String rawPassword = userRequestDTO.getPassword();
+        if (rawPassword == null || rawPassword.isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be null or empty");
+        }
+
+        //String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(rawPassword);
         userRepository.save(user);
     }
 }
