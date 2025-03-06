@@ -8,37 +8,40 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "Users")
-@JsonPropertyOrder({"userId", "firstName", "lastName", "email", "username", "password", "status", "role", "createdDate", "updatedDate"})
+@Table(name = "users")
+@JsonPropertyOrder({"user_id", "first_name", "last_name", "email", "password", "status", "role", "created_date", "updated_date"})
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "UserId")
+    @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "FirstName")
+    @Column(name = "first_name")
     private String firstName;
 
-    @Column(name = "LastName")
+    @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "Email", unique = true)
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(nullable = false)
     private String password;
 
-    @Column(name = "Status", nullable = false)
+    // Status values can be true, false, pending, null
+    @Column(name = "status", nullable = false)
     private Boolean status;
 
-    @Column(name = "Role", nullable = false)
+    // Directly storing role as a string (could be an enum if needed)
+    @Column(name = "role", nullable = false)
     private String role;
 
-    @Column(name = "CreatedDate", updatable = false)
+    @Column(name = "created_date", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdDate;
 
-    @Column(name = "UpdatedDate")
+    @Column(name = "updated_date")  // Column name in lowercase
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime updatedDate;
 
