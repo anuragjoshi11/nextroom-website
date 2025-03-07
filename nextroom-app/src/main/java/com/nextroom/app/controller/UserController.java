@@ -1,34 +1,45 @@
 package com.nextroom.app.controller;
 
-import com.nextroom.app.dto.UserRequestDTO;
+import com.nextroom.app.model.User;
 import com.nextroom.app.service.UserService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.nextroom.app.constants.Constants.USER_CREATED_SUCCESS;
+import java.util.List;
 
-@RestController
 @RequestMapping("/users")
-//@CrossOrigin(origins = FRONTEND_ORIGIN)
+@RestController
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    /**
-     * Registers a new user
-     *
-     * @param userRequestDTO the user data to be saved
-     */
-    @PostMapping("/signup")
-    public ResponseEntity<String> registerUser(@Valid @RequestBody UserRequestDTO userRequestDTO) {
-        userService.saveUser(userRequestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(USER_CREATED_SUCCESS);
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<List<User>> allUsers() {
+        List <User> users = userService.allUsers();
+        return ResponseEntity.ok(users);
+    }
+
+    /*@GetMapping("/{id}")
+    public ResponseEntity<List<User>> findUserById() {
+        List <User> users = userService.allUsers();
+
+        return ResponseEntity.ok(users);
+    }*/
+
+    @GetMapping("/current")
+    public ResponseEntity<User> authenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+        return ResponseEntity.ok(currentUser);
     }
 }

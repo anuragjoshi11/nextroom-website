@@ -2,7 +2,8 @@ package com.nextroom.app.constants;
 
 public class Constants {
     public static final String FRONTEND_ORIGIN = "https://nextroom-react.vercel.app";
-    public static final String USER_CREATED_SUCCESS = "User created successfully";
+    public static final String STUDENT_USER_CREATED_SUCCESS = "Student user created successfully";
+    public static final String LANDLORD_USER_CREATED_SUCCESS = "Landlord user created successfully";
     public static final String USER_NOT_LOGGED_IN = "User not logged in";
     public static final String LISTING_CREATED_SUCCESS = "Listing created successfully";
     public static final String LISTING_UPDATED_SUCCESS = "Listing updated successfully";

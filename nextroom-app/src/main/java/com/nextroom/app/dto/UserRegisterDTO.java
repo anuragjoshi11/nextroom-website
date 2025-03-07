@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class UserRequestDTO {
+public class UserRegisterDTO {
 
     private Long userId;
 
@@ -24,6 +24,5 @@ public class UserRequestDTO {
     @Size(min = 6, message = "Password should be at least 6 characters long")
     private String password;
 
-    @NotBlank(message = "Role is required")
     private String role;
 }

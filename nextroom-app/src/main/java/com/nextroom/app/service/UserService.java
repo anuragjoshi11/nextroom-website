@@ -1,7 +1,11 @@
 package com.nextroom.app.service;
 
-import com.nextroom.app.dto.UserRequestDTO;
+import com.nextroom.app.dto.UserRegisterDTO;
+import com.nextroom.app.model.User;
+
+import java.util.List;
 
 public interface UserService {
-    public void saveUser(UserRequestDTO userRequestDTO);
+
+    public List<User> allUsers();
 }
