@@ -6,6 +6,10 @@ import com.nextroom.app.dto.UserRegisterDTO;
 import com.nextroom.app.model.User;
 import com.nextroom.app.security.AuthenticationService;
 import com.nextroom.app.security.JwtService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,22 +40,44 @@ public class AuthenticationController {
      *
      * @param userRegisterDTO the user data to be saved
      */
+    @Operation(
+            summary = "Register a new student",
+            description = "Registers a new student by accepting their details and creating a user account.",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Student registered successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid user input")
+            }
+    )
     @PostMapping("/student/signup")
     public ResponseEntity<String> registerStudent(@Valid @RequestBody UserRegisterDTO userRegisterDTO) {
         userRegisterDTO.setRole(ROLE_STUDENT);
         User registeredUser = authenticationService.signup(userRegisterDTO);
-        //userService.saveUser(userRegisterDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(STUDENT_USER_CREATED_SUCCESS);
     }
 
+    @Operation(
+            summary = "Register a new landlord",
+            description = "Registers a new landlord by accepting their details and creating a user account.",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Landlord registered successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid user input")
+            }
+    )
     @PostMapping("/landlord/signup")
     public ResponseEntity<String> registerLandlord(@Valid @RequestBody UserRegisterDTO userRegisterDTO) {
         userRegisterDTO.setRole(ROLE_LANDLORD);
         User registeredUser = authenticationService.signup(userRegisterDTO);
-       // userService.saveUser(userRegisterDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(LANDLORD_USER_CREATED_SUCCESS);
     }
 
+    @Operation(
+            summary = "Student Login",
+            description = "Authenticates the student and generates a JWT token for further access.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Login successful", content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
+                    @ApiResponse(responseCode = "401", description = "Invalid credentials")
+            }
+    )
     @PostMapping("/student/login")
     public ResponseEntity<LoginResponse> studentLogin(@RequestBody UserLoginDTO userLoginDTO) {
         User authenticatedUser = authenticationService.authenticate(userLoginDTO, ROLE_STUDENT);
@@ -60,6 +86,14 @@ public class AuthenticationController {
         return ResponseEntity.ok(loginResponse);
     }
 
+    @Operation(
+            summary = "Landlord Login",
+            description = "Authenticates the landlord and generates a JWT token for further access.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Login successful", content = @Content(mediaType = "application/json", schema = @Schema(implementation = LoginResponse.class))),
+                    @ApiResponse(responseCode = "401", description = "Invalid credentials")
+            }
+    )
     @PostMapping("/landlord/login")
     public ResponseEntity<LoginResponse> landlordLogin(@RequestBody UserLoginDTO userLoginDTO) {
         User authenticatedUser = authenticationService.authenticate(userLoginDTO, ROLE_LANDLORD);

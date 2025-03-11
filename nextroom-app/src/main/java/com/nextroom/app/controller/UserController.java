@@ -2,6 +2,10 @@ package com.nextroom.app.controller;
 
 import com.nextroom.app.model.User;
 import com.nextroom.app.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -23,6 +27,14 @@ public class UserController {
         this.userService = userService;
     }
 
+    @Operation(
+            summary = "Get all users",
+            description = "Fetches a list of all users in the system.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "List of all users", content = @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))),
+                    @ApiResponse(responseCode = "404", description = "No users found")
+            }
+    )
     @GetMapping
     public ResponseEntity<List<User>> allUsers() {
         List <User> users = userService.allUsers();
@@ -36,6 +48,14 @@ public class UserController {
         return ResponseEntity.ok(users);
     }*/
 
+    @Operation(
+            summary = "Get current authenticated user",
+            description = "Fetches the details of the currently authenticated user.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Authenticated user details", content = @Content(mediaType = "application/json", schema = @Schema(implementation = User.class))),
+                    @ApiResponse(responseCode = "401", description = "User not authenticated")
+            }
+    )
     @GetMapping("/current")
     public ResponseEntity<User> authenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
