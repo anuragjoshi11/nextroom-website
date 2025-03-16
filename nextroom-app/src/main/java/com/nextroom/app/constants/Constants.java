@@ -14,5 +14,6 @@ public class Constants {
     public static final String USER_NOT_FOUND = "User not found";
     public static final String ROLE_STUDENT = "STUDENT";
     public static final String ROLE_LANDLORD = "LANDLORD";
+    public static final String ROLE_ADMIN = "ADMIN";
     public static final String COOKIE_JSESSIONID = "JSESSIONID";
 }
