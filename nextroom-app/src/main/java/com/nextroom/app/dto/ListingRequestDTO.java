@@ -16,6 +16,12 @@ public class ListingRequestDTO {
     @NotBlank(message = "Description is required")
     private String description;
 
+    private String suiteAmenities;
+
+    private String communityAmenities;
+
+    private String nearbyLocations;
+
     @NotNull(message = "Price is required")
     @Positive(message = "Price must be a positive value")
     private Double price;

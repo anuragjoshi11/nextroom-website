@@ -25,6 +25,15 @@ public class Listing {
     @Column(name = "description", nullable = false)
     private String description;
 
+    @Column(name = "suite_amenities", nullable = false)
+    private String suiteAmenities;
+
+    @Column(name = "community_amenities", nullable = false)
+    private String communityAmenities;
+
+    @Column(name = "nearby_locations", nullable = false)
+    private String nearbyLocations;
+
     @Column(name = "price", nullable = false)
     private Double price;
 

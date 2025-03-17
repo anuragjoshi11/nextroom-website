@@ -16,4 +16,6 @@ public class Constants {
     public static final String ROLE_LANDLORD = "LANDLORD";
     public static final String ROLE_ADMIN = "ADMIN";
     public static final String COOKIE_JSESSIONID = "JSESSIONID";
+    public static final String GCP_BUCKET_NAME = "nextroom-images";
+    public static final String FOLDER_PATH = "images/";
 }
