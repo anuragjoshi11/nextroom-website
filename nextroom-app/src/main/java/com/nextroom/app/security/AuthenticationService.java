@@ -40,7 +40,7 @@ public class AuthenticationService {
         return userRepository.save(user);
     }
 
-    public User authenticate(UserLoginDTO input, String role) {
+    public User authenticate(UserLoginDTO input) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.getEmail(),
@@ -49,9 +49,7 @@ public class AuthenticationService {
         );
         User user = userRepository.findByEmail(input.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        if (!user.getRole().equals(role)) {
-            throw new RuntimeException("Invalid role for login");
-        }
+
         return user;
     }
 }

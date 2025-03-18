@@ -16,6 +16,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+import static com.nextroom.app.constants.Constants.ROLE_ADMIN;
+import static com.nextroom.app.constants.Constants.ROLE_STUDENT;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
@@ -32,9 +35,11 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable) // Updated CSRF disabling
+                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/listings", "/listings/**", "/users", "/users/**", "/images/**").permitAll()
+                        .requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/listings","/listings/**", "/images/**").hasRole(ROLE_STUDENT) // Students only
+                        .requestMatchers("/users", "/users/**").hasRole(ROLE_ADMIN) // Admins only
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
@@ -51,8 +56,8 @@ public class SecurityConfiguration {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("http://localhost:8090"));
-        configuration.setAllowedMethods(List.of("GET", "POST"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5000", "https://nextroom-frontend.uc.r.appspot.com"));
+        configuration.setAllowedMethods(List.of("GET", "PUT", "POST"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

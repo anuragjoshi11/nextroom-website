@@ -1,13 +1,11 @@
 package com.nextroom.app.controller;
 
 import com.nextroom.app.service.CloudStorageService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/images")
+@CrossOrigin(origins = {"http://localhost:5000", "https://nextroom-frontend.uc.r.appspot.com"})
 public class ImageController {
 
     private final CloudStorageService cloudStorageService;

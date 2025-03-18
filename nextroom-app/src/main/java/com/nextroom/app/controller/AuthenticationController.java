@@ -20,7 +20,7 @@ import static com.nextroom.app.constants.Constants.*;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = FRONTEND_ORIGIN)
+@CrossOrigin(origins = {"http://localhost:5000", "https://nextroom-frontend.uc.r.appspot.com"})
 public class AuthenticationController {
 
     private final JwtService jwtService;
@@ -77,8 +77,8 @@ public class AuthenticationController {
     )
     @PostMapping("/student/login")
     public ResponseEntity<LoginResponse> studentLogin(@RequestBody UserLoginDTO userLoginDTO) {
-        User authenticatedUser = authenticationService.authenticate(userLoginDTO, ROLE_STUDENT);
-        String jwtToken = jwtService.generateToken(authenticatedUser);
+        User authenticatedUser = authenticationService.authenticate(userLoginDTO);
+        String jwtToken = jwtService.generateToken(authenticatedUser, ROLE_STUDENT);
         LoginResponse loginResponse = new LoginResponse().setToken(jwtToken).setExpiresIn(jwtService.getExpirationTime());
         return ResponseEntity.ok(loginResponse);
     }
@@ -93,8 +93,8 @@ public class AuthenticationController {
     )
     @PostMapping("/landlord/login")
     public ResponseEntity<LoginResponse> landlordLogin(@RequestBody UserLoginDTO userLoginDTO) {
-        User authenticatedUser = authenticationService.authenticate(userLoginDTO, ROLE_LANDLORD);
-        String jwtToken = jwtService.generateToken(authenticatedUser);
+        User authenticatedUser = authenticationService.authenticate(userLoginDTO);
+        String jwtToken = jwtService.generateToken(authenticatedUser, ROLE_LANDLORD);
         LoginResponse loginResponse = new LoginResponse().setToken(jwtToken).setExpiresIn(jwtService.getExpirationTime());
         return ResponseEntity.ok(loginResponse);
     }

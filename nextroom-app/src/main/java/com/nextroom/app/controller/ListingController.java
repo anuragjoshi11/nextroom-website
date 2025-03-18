@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import static com.nextroom.app.constants.Constants.FRONTEND_ORIGIN;
 
 @RestController
 @RequestMapping("/listings")
-@CrossOrigin(origins = FRONTEND_ORIGIN)
+@CrossOrigin(origins = {"http://localhost:5000", "https://nextroom-frontend.uc.r.appspot.com"})
 public class ListingController {
 
     private final ListingService listingService;
@@ -34,6 +35,7 @@ public class ListingController {
             }
     )
     @GetMapping()
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
     public List<ListingRequestDTO> getAllListings() {
         return listingService.getAllListings();
     }
@@ -47,6 +49,7 @@ public class ListingController {
             }
     )
     @GetMapping("/{listingId}")
+    @PreAuthorize("hasRole('ROLE_STUDENT')")
     public ListingRequestDTO getListingById(@PathVariable Long listingId) {
         return listingService.getListingById(listingId);
     }
