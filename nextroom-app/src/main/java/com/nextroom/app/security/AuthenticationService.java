@@ -35,6 +35,9 @@ public class AuthenticationService {
                 .setEmail(input.getEmail())
                 .setStatus(true)
                 .setRole(input.getRole())
+                .setUniversity(input.getUniversity())
+                .setAge(input.getAge())
+                .setPhoneNumber(input.getPhoneNumber())
                 .setPassword(passwordEncoder.encode(input.getPassword()));
 
         return userRepository.save(user);

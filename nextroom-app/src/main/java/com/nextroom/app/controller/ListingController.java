@@ -16,7 +16,7 @@ import static com.nextroom.app.constants.Constants.FRONTEND_ORIGIN;
 
 @RestController
 @RequestMapping("/listings")
-@CrossOrigin(origins = {"http://localhost:5000", "https://nextroom-frontend.uc.r.appspot.com"})
+@CrossOrigin(origins = {"http://localhost:5000", "https://nextroom-frontend.uc.r.appspot.com", "https://www.nextroom.ca", "https://nextroom.ca"})
 public class ListingController {
 
     private final ListingService listingService;

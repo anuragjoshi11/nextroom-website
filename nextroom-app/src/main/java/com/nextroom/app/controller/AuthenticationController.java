@@ -6,6 +6,7 @@ import com.nextroom.app.dto.UserRegisterDTO;
 import com.nextroom.app.model.User;
 import com.nextroom.app.security.AuthenticationService;
 import com.nextroom.app.security.JwtService;
+import com.nextroom.app.service.EmailService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,16 +21,18 @@ import static com.nextroom.app.constants.Constants.*;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = {"http://localhost:5000", "https://nextroom-frontend.uc.r.appspot.com"})
+@CrossOrigin(origins = {"http://localhost:5000", "https://nextroom-frontend.uc.r.appspot.com", "https://www.nextroom.ca", "https://nextroom.ca"})
 public class AuthenticationController {
 
     private final JwtService jwtService;
     private final AuthenticationService authenticationService;
+    private final EmailService emailService;
 
     @Autowired
-    public AuthenticationController(AuthenticationService authenticationService, JwtService jwtService) {
+    public AuthenticationController(AuthenticationService authenticationService, JwtService jwtService, EmailService emailService) {
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;
+        this.emailService = emailService;
     }
 
     /**
@@ -46,10 +49,22 @@ public class AuthenticationController {
             }
     )
     @PostMapping("/student/signup")
-    public ResponseEntity<String> registerStudent(@Valid @RequestBody UserRegisterDTO userRegisterDTO) {
+    public ResponseEntity<LoginResponse> registerStudent(@Valid @RequestBody UserRegisterDTO userRegisterDTO) {
         userRegisterDTO.setRole(ROLE_STUDENT);
         User registeredUser = authenticationService.signup(userRegisterDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(STUDENT_USER_CREATED_SUCCESS);
+
+        UserLoginDTO userLoginDTO = new UserLoginDTO();
+        userLoginDTO.setEmail(userRegisterDTO.getEmail());
+        userLoginDTO.setPassword(userRegisterDTO.getPassword());
+
+        User authenticatedUser = authenticationService.authenticate(userLoginDTO);
+
+        String jwtToken = jwtService.generateToken(authenticatedUser, ROLE_STUDENT);
+        LoginResponse loginResponse = new LoginResponse().setToken(jwtToken).setExpiresIn(jwtService.getExpirationTime());
+
+        emailService.sendSignupEmail(registeredUser.getEmail());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(loginResponse);
     }
 
     @Operation(

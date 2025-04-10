@@ -1,11 +1,8 @@
 package com.nextroom.app.model;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -32,6 +29,15 @@ public class User implements UserDetails {
 
     @Column(name = "email", unique = true)
     private String email;
+
+    @Column(name = "university")
+    private String university;
+
+    @Column(name = "age")
+    private String age;
+
+    @Column(name = "phone_number", unique = true)
+    private String phoneNumber;
 
     @Column(nullable = false)
     private String password;

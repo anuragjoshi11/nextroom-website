@@ -18,4 +18,5 @@ public class Constants {
     public static final String COOKIE_JSESSIONID = "JSESSIONID";
     public static final String GCP_BUCKET_NAME = "nextroom-images";
     public static final String FOLDER_PATH = "images/";
+    public static final String BREVO_API_URL = "https://api.brevo.com/v3/smtp/email";
 }

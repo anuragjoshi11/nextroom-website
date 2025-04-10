@@ -20,6 +20,14 @@ public class UserRegisterDTO {
     @Email(message = "Email should be valid")
     private String email;
 
+    @NotBlank(message = "University is required")
+    private String university;
+
+    @NotBlank(message = "Age is required")
+    private String age;
+
+    private String phoneNumber;
+
     @NotBlank(message = "Password is required")
     @Size(min = 6, message = "Password should be at least 6 characters long")
     private String password;

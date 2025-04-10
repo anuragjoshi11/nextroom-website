@@ -21,7 +21,7 @@ import static com.nextroom.app.constants.Constants.FRONTEND_ORIGIN;
 
 @RequestMapping("/users")
 @RestController
-@CrossOrigin(origins = {"http://localhost:5000", "https://nextroom-frontend.uc.r.appspot.com"})
+@CrossOrigin(origins = {"http://localhost:5000", "https://nextroom-frontend.uc.r.appspot.com", "https://www.nextroom.ca", "https://nextroom.ca"})
 public class UserController {
 
     private final UserService userService;
