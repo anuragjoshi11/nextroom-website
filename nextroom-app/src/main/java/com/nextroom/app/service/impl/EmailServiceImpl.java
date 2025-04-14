@@ -20,6 +20,9 @@ public class EmailServiceImpl implements EmailService {
     @Value("${brevo.api.key}")
     private String apiKey;
 
+    @Value("${brevo.vanity.sender.email}")
+    private String vanitySenderEmail;
+
     public void sendSignupEmail(String recipientEmail) {
         Map<String, Object> emailData = new HashMap<>();
 
@@ -94,4 +97,42 @@ public class EmailServiceImpl implements EmailService {
             System.out.println("Error sending email: " + response.getBody());
         }
     }
+
+    public void sendPromotionEmail(String to, String subject, String body) {
+        Map<String, Object> emailData = new HashMap<>();
+
+        // Sender information
+        Map<String, String> sender = new HashMap<>();
+        sender.put("email", vanitySenderEmail);
+        emailData.put("sender", sender);
+
+        // Recipient information
+        Map<String, String> recipient = new HashMap<>();
+        recipient.put("email", to);
+        emailData.put("to", new Object[]{recipient});
+
+        // Subject and body
+        emailData.put("subject", subject);
+        emailData.put("htmlContent", body); // The body here is HTML content passed from the front-end
+
+        // Set headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("api-key", apiKey);  // Brevo API Key
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // Prepare HTTP entity for the request
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(emailData, headers);
+
+        // Create RestTemplate and send the request
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.exchange(
+                BREVO_API_URL, HttpMethod.POST, entity, String.class);
+        // Handle the response
+        if (response.getStatusCode() == HttpStatus.OK) {
+            System.out.println("Promotion email sent successfully!");
+        } else {
+            System.out.println("Error sending promotion email: " + response.getBody());
+        }
+    }
+
 }

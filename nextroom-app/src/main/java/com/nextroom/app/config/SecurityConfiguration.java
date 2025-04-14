@@ -37,7 +37,7 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/promotion/**").permitAll()
                         .requestMatchers("/listings","/listings/**", "/images/**").hasRole(ROLE_STUDENT) // Students only
                         .requestMatchers("/users", "/users/**").hasRole(ROLE_ADMIN) // Admins only
                         .anyRequest().authenticated()
@@ -56,7 +56,8 @@ public class SecurityConfiguration {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("http://localhost:5000", "https://nextroom-frontend.uc.r.appspot.com", "https://www.nextroom.ca", "https://nextroom.ca"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5000", "https://nextroom-frontend.uc.r.appspot.com",
+                "https://www.nextroom.ca", "https://nextroom.ca"));
         configuration.setAllowedMethods(List.of("GET", "PUT", "POST", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
 
