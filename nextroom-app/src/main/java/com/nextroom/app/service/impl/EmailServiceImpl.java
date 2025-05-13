@@ -1,9 +1,12 @@
 package com.nextroom.app.service.impl;
 
 import com.nextroom.app.service.EmailService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -12,7 +15,10 @@ import java.util.Map;
 import static com.nextroom.app.constants.Constants.BREVO_API_URL;
 
 @Service
+@Transactional
 public class EmailServiceImpl implements EmailService {
+
+    private static final Logger logger = LogManager.getLogger(EmailServiceImpl.class);
 
     @Value("${brevo.sender.email}")
     private String senderEmail;
@@ -91,10 +97,10 @@ public class EmailServiceImpl implements EmailService {
                 BREVO_API_URL, HttpMethod.POST, entity, String.class);
 
         // Handle response (log success or failure)
-        if (response.getStatusCode() == HttpStatus.OK) {
-            System.out.println("Email sent successfully!");
+        if (response.getStatusCode().is2xxSuccessful()) {
+            logger.info("Email sent successfully!");
         } else {
-            System.out.println("Error sending email: " + response.getBody());
+            logger.info("Error sending email: {}", response.getBody());
         }
     }
 
@@ -113,11 +119,11 @@ public class EmailServiceImpl implements EmailService {
 
         // Subject and body
         emailData.put("subject", subject);
-        emailData.put("htmlContent", body); // The body here is HTML content passed from the front-end
+        emailData.put("htmlContent", body);
 
         // Set headers
         HttpHeaders headers = new HttpHeaders();
-        headers.set("api-key", apiKey);  // Brevo API Key
+        headers.set("api-key", apiKey);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         // Prepare HTTP entity for the request
@@ -128,10 +134,10 @@ public class EmailServiceImpl implements EmailService {
         ResponseEntity<String> response = restTemplate.exchange(
                 BREVO_API_URL, HttpMethod.POST, entity, String.class);
         // Handle the response
-        if (response.getStatusCode() == HttpStatus.OK) {
-            System.out.println("Promotion email sent successfully!");
+        if (response.getStatusCode().is2xxSuccessful()) {
+            logger.info("Promotion email sent successfully!");
         } else {
-            System.out.println("Error sending promotion email: " + response.getBody());
+            logger.info("Error sending promotion email: {}", response.getBody());
         }
     }
 

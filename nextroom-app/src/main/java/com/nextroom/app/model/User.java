@@ -50,6 +50,9 @@ public class User implements UserDetails {
     @Column(name = "role", nullable = false)
     private String role;
 
+    @Column(name = "tag")
+    private String tag;
+
     @Column(name = "created_date", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdDate;
