@@ -1,12 +1,12 @@
 package com.nextroom.app.controller;
 
-import com.nextroom.app.dto.LoginResponse;
-import com.nextroom.app.dto.UserLoginDTO;
-import com.nextroom.app.dto.UserRegisterDTO;
+import com.nextroom.app.dto.*;
 import com.nextroom.app.model.User;
+import com.nextroom.app.repository.PasswordResetTokenRepository;
 import com.nextroom.app.security.AuthenticationService;
 import com.nextroom.app.security.JwtService;
 import com.nextroom.app.service.EmailService;
+import com.nextroom.app.service.PasswordResetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 import static com.nextroom.app.constants.Constants.*;
 
@@ -27,12 +29,15 @@ public class AuthenticationController {
     private final JwtService jwtService;
     private final AuthenticationService authenticationService;
     private final EmailService emailService;
+    private final PasswordResetService passwordResetService;
+
 
     @Autowired
-    public AuthenticationController(AuthenticationService authenticationService, JwtService jwtService, EmailService emailService) {
+    public AuthenticationController(AuthenticationService authenticationService, JwtService jwtService, EmailService emailService, PasswordResetService passwordResetService) {
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;
         this.emailService = emailService;
+        this.passwordResetService = passwordResetService;
     }
 
     /**
@@ -114,7 +119,19 @@ public class AuthenticationController {
         return ResponseEntity.ok(loginResponse);
     }
 
-    //Below code for subdomain:
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPasswordRequest(@RequestBody @Valid ForgotPasswordRequestDTO request) {
+        passwordResetService.processPasswordResetRequest(request.getEmail());
+        return ResponseEntity.ok(Map.of("message", "Password reset link has been sent to your email."));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody @Valid ResetPasswordRequestDTO request) {
+        passwordResetService.resetPassword(request);
+        return ResponseEntity.ok(Map.of("message", "Password has been successfully reset."));
+    }
+
+        //Below code for subdomain:
 
     /*@PostMapping
     public ResponseEntity<String> registerUser(

@@ -29,6 +29,7 @@ public class EmailServiceImpl implements EmailService {
     @Value("${brevo.vanity.sender.email}")
     private String vanitySenderEmail;
 
+    @Override
     public void sendSignupEmail(String recipientEmail) {
         Map<String, Object> emailData = new HashMap<>();
 
@@ -100,10 +101,11 @@ public class EmailServiceImpl implements EmailService {
         if (response.getStatusCode().is2xxSuccessful()) {
             logger.info("Email sent successfully!");
         } else {
-            logger.info("Error sending email: {}", response.getBody());
+            logger.error("Error sending email: {}", response.getBody());
         }
     }
 
+    @Override
     public void sendPromotionEmail(String to, String subject, String body) {
         Map<String, Object> emailData = new HashMap<>();
 
@@ -137,8 +139,52 @@ public class EmailServiceImpl implements EmailService {
         if (response.getStatusCode().is2xxSuccessful()) {
             logger.info("Promotion email sent successfully!");
         } else {
-            logger.info("Error sending promotion email: {}", response.getBody());
+            logger.error("Error sending promotion email: {}", response.getBody());
         }
     }
 
+    @Override
+    public void sendPasswordResetEmail(String to, String resetLink) {
+        Map<String, Object> emailData = new HashMap<>();
+
+        // Sender info
+        Map<String, String> sender = new HashMap<>();
+        sender.put("email", senderEmail);
+        emailData.put("sender", sender);
+
+        // Recipient info
+        Map<String, String> recipient = new HashMap<>();
+        recipient.put("email", to);
+        emailData.put("to", new Object[]{recipient});
+
+        // Email content
+        emailData.put("subject", "Reset your password - Next Room");
+
+        String html = "<html><body style='font-family: Arial, sans-serif;'>" +
+                "<h2>Password Reset Request</h2>" +
+                "<p>Click the link below to reset your password:</p>" +
+                "<a href='" + resetLink + "' style='background-color: #007BFF; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>Reset Password</a>" +
+                "<p>If you didn't request this, you can ignore this email.</p>" +
+                "<br><p>Thanks,<br><strong>Next Room Team</strong></p>" +
+                "</body></html>";
+
+        emailData.put("htmlContent", html);
+
+        // Set headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("api-key", apiKey);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // Send
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(emailData, headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.exchange(
+                BREVO_API_URL, HttpMethod.POST, entity, String.class);
+
+        if (response.getStatusCode().is2xxSuccessful()) {
+            logger.info("Password reset email sent to {}", to);
+        } else {
+            logger.error("Failed to send password reset email to {}: {}", to, response.getBody());
+        }
+    }
 }
