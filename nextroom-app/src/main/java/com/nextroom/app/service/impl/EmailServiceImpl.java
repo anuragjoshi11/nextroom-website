@@ -29,6 +29,9 @@ public class EmailServiceImpl implements EmailService {
     @Value("${brevo.vanity.sender.email}")
     private String vanitySenderEmail;
 
+    @Value("${brevo.password.rest.sender.email}")
+    private String pwdResetSenderEmail;
+
     @Override
     public void sendSignupEmail(String recipientEmail) {
         Map<String, Object> emailData = new HashMap<>();
@@ -149,7 +152,7 @@ public class EmailServiceImpl implements EmailService {
 
         // Sender info
         Map<String, String> sender = new HashMap<>();
-        sender.put("email", senderEmail);
+        sender.put("email", pwdResetSenderEmail);
         emailData.put("sender", sender);
 
         // Recipient info
