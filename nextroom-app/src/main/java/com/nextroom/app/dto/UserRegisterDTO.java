@@ -23,10 +23,11 @@ public class UserRegisterDTO {
     @NotBlank(message = "University is required")
     private String university;
 
-    @NotBlank(message = "Age is required")
     private String age;
 
     private String phoneNumber;
+
+    private String pronouns;
 
     @NotBlank(message = "Password is required")
     @Size(min = 6, message = "Password should be at least 6 characters long")

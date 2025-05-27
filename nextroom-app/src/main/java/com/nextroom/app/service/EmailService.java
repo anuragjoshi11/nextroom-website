@@ -4,4 +4,5 @@ public interface EmailService {
     public void sendSignupEmail(String email);
     public void sendPromotionEmail(String to, String subject, String body);
     public void sendPasswordResetEmail(String to, String resetLink);
+    public void sendVerificationEmail(String recipientEmail, String verifyLink);
 }

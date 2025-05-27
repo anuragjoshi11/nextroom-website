@@ -57,7 +57,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
             passwordResetTokenRepository.save(resetToken);
             logger.info("Password reset token saved for user email={}", user.getEmail());
 
-            String resetLink = "https://yourfrontend.com/reset-password?token=" + token;
+            String resetLink = "https://nextroom.ca/reset-password?token=" + token;
             emailService.sendPasswordResetEmail(email, resetLink);
             logger.info("Reset email sent to {}", email);
 

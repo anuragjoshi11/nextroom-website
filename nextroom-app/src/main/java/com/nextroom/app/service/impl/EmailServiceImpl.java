@@ -190,4 +190,55 @@ public class EmailServiceImpl implements EmailService {
             logger.error("Failed to send password reset email to {}: {}", to, response.getBody());
         }
     }
+
+    @Override
+    public void sendVerificationEmail(String recipientEmail, String verifyLink) {
+        Map<String, Object> emailData = new HashMap<>();
+
+        // Sender
+        Map<String, String> sender = new HashMap<>();
+        sender.put("email", pwdResetSenderEmail);
+        emailData.put("sender", sender);
+
+        // Recipient
+        Map<String, String> recipient = new HashMap<>();
+        recipient.put("email", recipientEmail);
+        emailData.put("to", new Object[]{recipient});
+
+        // Subject and Email Body
+        emailData.put("subject", "Verify Your Email - Next Room");
+        emailData.put("htmlContent", "<html><body>" +
+                "<h2 style='font-family: Arial, sans-serif; text-align: center;'>Welcome to Next Room!</h2>" +
+                "<p style='font-family: Arial, sans-serif; font-size: 14px; color: #414141; padding-left: 20px;'>" +
+                "Thank you for signing up. Please click the button below to verify your email address and activate your account." +
+                "</p>" +
+                "<div style='text-align: center; margin: 30px;'>" +
+                "<a href='" + verifyLink + "' style='background-color: #007BFF; color: white; padding: 12px 24px; border-radius: 6px; font-family: Arial, sans-serif; text-decoration: none;'>Verify Account</a>" +
+                "</div>" +
+                "<p style='font-family: Arial, sans-serif; font-size: 14px; color: #414141; padding-left: 20px;'>" +
+                "If you didn’t request this, you can ignore this email." +
+                "</p>" +
+                "<p style='font-family: Arial, sans-serif; font-size: 14px; color: #414141; padding-left: 20px;'>" +
+                "Visit our website: <a href='https://nextroom.ca' style='color: #007BFF;'>Next Room</a><br>" +
+                "<strong>Next Room</strong><br>90 University Private, K1N 6N5, Ottawa" +
+                "</p></body></html>");
+
+        // Headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("api-key", apiKey);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // Send Request
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(emailData, headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.exchange(BREVO_API_URL, HttpMethod.POST, entity, String.class);
+
+        // Log result
+        if (response.getStatusCode().is2xxSuccessful()) {
+            logger.info("Verification email sent successfully to {}", recipientEmail);
+        } else {
+            logger.error("Failed to send verification email to {}: {}", recipientEmail, response.getBody());
+        }
+    }
+
 }

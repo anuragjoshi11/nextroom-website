@@ -42,6 +42,9 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @Column(name = "pronouns")
+    private String pronouns;
+
     // Status values can be true, false, pending, null
     @Column(name = "status", nullable = false)
     private Boolean status;

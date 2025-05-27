@@ -3,6 +3,7 @@ package com.nextroom.app.config;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import jakarta.annotation.PostConstruct;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,7 +44,12 @@ public class DataSourceConfig {
         return this.swappableDataSource;
     }
 
-    @Scheduled(fixedDelay = 55 * 60 * 1000, initialDelay = 55 * 60 * 1000)
+    @PostConstruct
+    public void postConstructLog() {
+        logger.info("DataSourceConfig initialized; scheduled task will run every 45 minutes.");
+    }
+
+    @Scheduled(fixedRate = 45 * 60 * 1000)
     public void refreshDataSource() {
         logger.info("Starting refreshDataSource at {}", java.time.Instant.now());
 

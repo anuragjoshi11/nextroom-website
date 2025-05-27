@@ -2,11 +2,10 @@ package com.nextroom.app.controller;
 
 import com.nextroom.app.dto.*;
 import com.nextroom.app.model.User;
-import com.nextroom.app.repository.PasswordResetTokenRepository;
 import com.nextroom.app.security.AuthenticationService;
 import com.nextroom.app.security.JwtService;
-import com.nextroom.app.service.EmailService;
 import com.nextroom.app.service.PasswordResetService;
+import com.nextroom.app.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,21 +22,21 @@ import static com.nextroom.app.constants.Constants.*;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = {"http://localhost:5000", "https://nextroom-frontend.uc.r.appspot.com", "https://www.nextroom.ca", "https://nextroom.ca"})
+@CrossOrigin(origins = {"http://localhost:5000", "https://nextroom-frontend.uc.r.appspot.com", "https://www.nextroom.ca", "https://nextroom.ca", "https://dev-nextroom-frontend.ue.r.appspot.com"})
 public class AuthenticationController {
 
     private final JwtService jwtService;
     private final AuthenticationService authenticationService;
-    private final EmailService emailService;
+    private final UserService userService;
     private final PasswordResetService passwordResetService;
 
 
     @Autowired
-    public AuthenticationController(AuthenticationService authenticationService, JwtService jwtService, EmailService emailService, PasswordResetService passwordResetService) {
+    public AuthenticationController(UserService userService, AuthenticationService authenticationService, JwtService jwtService, PasswordResetService passwordResetService) {
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;
-        this.emailService = emailService;
         this.passwordResetService = passwordResetService;
+        this.userService = userService;
     }
 
     /**
@@ -54,23 +53,11 @@ public class AuthenticationController {
             }
     )
     @PostMapping("/student/signup")
-    public ResponseEntity<LoginResponse> registerStudent(@Valid @RequestBody UserRegisterDTO userRegisterDTO) {
-        userRegisterDTO.setRole(ROLE_STUDENT);
-        User registeredUser = authenticationService.signup(userRegisterDTO);
-
-        UserLoginDTO userLoginDTO = new UserLoginDTO();
-        userLoginDTO.setEmail(userRegisterDTO.getEmail());
-        userLoginDTO.setPassword(userRegisterDTO.getPassword());
-
-        User authenticatedUser = authenticationService.authenticate(userLoginDTO);
-
-        String jwtToken = jwtService.generateToken(authenticatedUser, ROLE_STUDENT);
-        LoginResponse loginResponse = new LoginResponse().setToken(jwtToken).setExpiresIn(jwtService.getExpirationTime());
-
-        emailService.sendSignupEmail(registeredUser.getEmail());
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(loginResponse);
+    public ResponseEntity<String> registerStudent(@Valid @RequestBody UserRegisterDTO userRegisterDTO) {
+        userService.registerStudent(userRegisterDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Registration successful. Please check your email to verify your account.");
     }
+
 
     @Operation(
             summary = "Register a new landlord",
@@ -131,36 +118,18 @@ public class AuthenticationController {
         return ResponseEntity.ok(Map.of("message", "Password has been successfully reset."));
     }
 
-        //Below code for subdomain:
-
-    /*@PostMapping
-    public ResponseEntity<String> registerUser(
-            @Valid @RequestBody UserRegisterDTO userRegisterDTO,
-            HttpServletRequest request) {
-
-        // Extract subdomain
-        String subdomain = getSubdomain(request);
-
-        // Assign role based on subdomain
-        if ("students".equals(subdomain)) {
-            userRegisterDTO.setRole("STUDENT");
-        } else if ("partners".equals(subdomain)) {
-            userRegisterDTO.setRole("LANDLORD");
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid subdomain");
-        }
-
-        // Save the user
-        userService.saveUser(userRegisterDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body("User created successfully.");
+    @PostMapping("/verify-email")
+    public ResponseEntity<String> verifyEmail(@RequestBody Map<String, String> payload) {
+        String token = payload.get("token");
+        userService.verifyEmail(token);
+        return ResponseEntity.ok("Email verified successfully. You can now log in.");
     }
 
-    private String getSubdomain(HttpServletRequest request) {
-        String host = request.getServerName(); // Get the domain name (e.g., students.nextroom.ca)
-        String[] parts = host.split("\\."); // Split by dot
-        if (parts.length > 2) {
-            return parts[0]; // First part is the subdomain (students or partners)
-        }
-        return ""; // If no subdomain, return empty
-    }*/
+    @PostMapping("/resend-verification")
+    public ResponseEntity<String> resendVerification(@RequestBody Map<String, String> payload) {
+        String email = payload.get("email");
+        userService.resendVerificationEmail(email);
+        return ResponseEntity.ok("If your account is unverified, a new verification email has been sent.");
+    }
+
 }
