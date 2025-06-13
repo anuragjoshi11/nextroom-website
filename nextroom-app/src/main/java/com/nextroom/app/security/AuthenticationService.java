@@ -49,6 +49,8 @@ public class AuthenticationService {
                     .setAge(input.getAge())
                     .setPhoneNumber(input.getPhoneNumber())
                     .setTag(input.getTag())
+                    .setPronouns(input.getPronouns())
+                    .setPropertyInterests(input.getPropertyInterests())
                     .setPassword(passwordEncoder.encode(input.getPassword()));
 
             User savedUser = userRepository.save(user);

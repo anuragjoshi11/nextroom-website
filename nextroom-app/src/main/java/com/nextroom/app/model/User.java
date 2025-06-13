@@ -53,6 +53,12 @@ public class User implements UserDetails {
     @Column(name = "tag")
     private String tag;
 
+    @Column(name = "pronouns")
+    private String pronouns;
+
+    @Column(name="property_interests")
+    private String propertyInterests;
+
     @Column(name = "created_date", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdDate;

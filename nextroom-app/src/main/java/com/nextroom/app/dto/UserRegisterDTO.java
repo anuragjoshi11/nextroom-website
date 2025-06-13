@@ -23,7 +23,6 @@ public class UserRegisterDTO {
     @NotBlank(message = "University is required")
     private String university;
 
-    @NotBlank(message = "Age is required")
     private String age;
 
     private String phoneNumber;
@@ -35,4 +34,8 @@ public class UserRegisterDTO {
     private String role;
 
     private String tag;
+
+    private String pronouns;
+
+    private String propertyInterests;
 }
