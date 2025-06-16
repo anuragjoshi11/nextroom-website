@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/promotion")
 @RestController
 @CrossOrigin(origins = {"http://localhost:5000", "https://nextroom-frontend.uc.r.appspot.com",
-        "https://www.nextroom.ca", "https://nextroom.ca"})
+        "https://www.nextroom.ca", "https://nextroom.ca", "https://dev-nextroom-frontend.ue.r.appspot.com"})
 
 public class VanityEmailController {
 
