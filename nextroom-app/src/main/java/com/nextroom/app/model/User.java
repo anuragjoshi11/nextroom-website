@@ -42,9 +42,6 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @Column(name = "pronouns")
-    private String pronouns;
-
     // Status values can be true, false, pending, null
     @Column(name = "status", nullable = false)
     private Boolean status;
@@ -55,6 +52,12 @@ public class User implements UserDetails {
 
     @Column(name = "tag")
     private String tag;
+
+    @Column(name = "pronouns")
+    private String pronouns;
+
+    @Column(name="property_interests")
+    private String propertyInterests;
 
     @Column(name = "created_date", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
