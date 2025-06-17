@@ -14,7 +14,6 @@ public class ImageController {
         this.cloudStorageService = cloudStorageService;
     }
 
-    // Endpoint to generate and return signed URL for an image
     @GetMapping("/url")
     public String getSignedUrl(@RequestParam String fileName) {
         return cloudStorageService.generateSignedUrl(fileName);

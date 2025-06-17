@@ -5,6 +5,7 @@ import com.nextroom.app.web.service.VanityEmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/promotion")
@@ -21,7 +22,7 @@ public class VanityEmailController {
     }
 
     @PostMapping("/send-email")
-    //@PreAuthorize("hasRole('ROLE_STUDENT')")
+    @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<String> sendEmail(@RequestBody EmailRequestDTO emailRequestDTO, @RequestHeader("Authorization") String token) {
         String result = vanityEmailService.sendVanityEmail(emailRequestDTO, token);
         if (result.equals("Emails sent successfully.")) {

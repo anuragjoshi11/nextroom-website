@@ -37,8 +37,8 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/promotion/**").permitAll()
-                        .requestMatchers("/listings","/listings/**", "/images/**").hasRole(ROLE_STUDENT) // Students only
+                        .requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/invite/validate/**").permitAll()
+                        .requestMatchers("/listings","/listings/**", "/images/**", "/invite/**", "/promotion/**").hasRole(ROLE_STUDENT) // Students only
                         .requestMatchers("/users", "/users/**").hasRole(ROLE_ADMIN) // Admins only
                         .anyRequest().authenticated()
                 )

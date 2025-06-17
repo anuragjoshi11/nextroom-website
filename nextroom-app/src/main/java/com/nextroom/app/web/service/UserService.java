@@ -18,4 +18,6 @@ public interface UserService {
     public void verifyEmail(String token);
 
     public void resendVerificationEmail(String email);
+
+    public User extractUserFromToken(String token);
 }

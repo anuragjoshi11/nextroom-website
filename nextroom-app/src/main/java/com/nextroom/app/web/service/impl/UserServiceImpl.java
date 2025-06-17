@@ -116,5 +116,26 @@ public class UserServiceImpl implements UserService {
         sendEmailVerificationToken(user);
     }
 
+    @Override
+    public User extractUserFromToken(String token) {
+        try {
+            if (token != null && token.startsWith("Bearer ")) {
+                token = token.substring(7).trim();
+            }
+
+            String userEmail = jwtService.extractUsername(token);
+            logger.info("User email extracted from token: {}", userEmail);
+
+            User user = findUserByEmail(userEmail);
+            if (user == null) {
+                logger.warn("User not found for email: {}", userEmail);
+                throw new UsernameNotFoundException("User not found");
+            }
+            return user;
+        } catch (Exception e) {
+            logger.error("Error extracting user from token: {}", e.getMessage(), e);
+            throw new RuntimeException("Invalid or expired token");
+        }
+    }
 
 }
