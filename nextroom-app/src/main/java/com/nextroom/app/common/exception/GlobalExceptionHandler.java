@@ -66,6 +66,23 @@ public class GlobalExceptionHandler {
                 .body("QR Code generation failed: " + ex.getMessage());
     }
 
+    @ExceptionHandler(AccessTokenFetchException.class)
+    public ResponseEntity<Map<String, Object>> handleAccessTokenFetch(AccessTokenFetchException ex) {
+        Map<String, Object> error = new HashMap<>();
+        error.put("error", "Failed to retrieve access token");
+        error.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(error);
+    }
+
+    @ExceptionHandler(EntrataApiException.class)
+    public ResponseEntity<Map<String, Object>> handleEntrataApiException(EntrataApiException ex) {
+        Map<String, Object> error = new HashMap<>();
+        error.put("error", "Entrata API error");
+        error.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(error);
+    }
+
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenericException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
